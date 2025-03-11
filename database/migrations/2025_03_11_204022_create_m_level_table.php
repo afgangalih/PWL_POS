@@ -11,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('m_level', function (Blueprint $table) {
-            $table->bigIncrements('level_id'); // Ini sudah cukup untuk primary key
-            $table->string('username', 20);
-            $table->string('nama', 100);
-            $table->string('password');
+        Schema::create('m_kategori', function (Blueprint $table) {
+            $table->id();
             $table->timestamps();
-
-         
         });
-        
     }
 
     /**
@@ -28,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('m_level');
+        Schema::dropIfExists('m_kategori');
     }
 };
