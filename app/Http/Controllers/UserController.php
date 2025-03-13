@@ -25,7 +25,26 @@ class UserController extends Controller
         */
 
         // Akses userModel/view
-        $user = UserModel::all();
-        return view('user', ['data' => $user]);
+
+        /* $data = [
+            'level_id' => 2,
+            'username' => 'manager_tiga',
+            'nama' => 'Manager 3',
+            'password' => Hash::make('12345')
+        ];
+        UserModel::create($data); */
+
+       /* $user = UserModel::find(1);
+        return view('user', ['data' => $user]); */
+
+        $user = UserModel::findOr(1, ['username', 'nama'], function() {
+            abort(404);
+        });
+
+      /*  $user = UserModel::where('user_id', 1)->first();
+         return view('user', ['data' => $user ? [$user] : []]); */
+
+       /* $user = UserModel::all();
+        return view('user', ['data' => $user]); */
     }
 }
