@@ -33,3 +33,18 @@ Route::get('/barang/create', [BarangController::class, 'create'])->name('barang.
 
 
 Route::post('/barang/store', [BarangController::class, 'store'])->name('barang.store');
+
+// 2.6
+// Rute User
+Route::get('/user', [UserController::class, 'index'])->name('user.index');
+
+Route::get('/user/tambah', [UserController::class, 'tambah'])->name('user.tambah');
+
+Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan'])->name('user.tambah_simpan');
+
+Route::get('/ubah/{id}', [UserController::class, 'ubah'])->name('user.ubah');
+   
+Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan'])->name('user.ubah_simpan');
+
+Route::get('/user/hapus/{id}', [UserController::class, 'hapus'])->name('user.hapus');
+
