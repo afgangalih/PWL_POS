@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Data User</h1>
-    <a href="{{ route('user.tambah') }}">Tambah User</a>
+    <a href="{{ route('user.create') }}">Tambah User</a> <!-- Sesuaikan dengan rute baru -->
     <table border="1" cellpadding="2" cellspacing="0">
         <tr>
             <td>ID</td>
@@ -27,8 +27,12 @@
             <td>{{ $d->level->level_kode ?? 'N/A' }}</td>
             <td>{{ $d->level->level_nama ?? 'N/A' }}</td>
             <td>
-                <a href="{{ route('user.ubah', $d->user_id) }}">Ubah</a>
-                <a href="{{ route('user.hapus', $d->user_id) }}" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</a>
+                <a href="{{ route('user.edit', $d->user_id) }}">Ubah</a> <!-- Sesuaikan dengan rute baru -->
+                <form action="{{ route('user.destroy', $d->user_id) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
+                </form>
             </td>
         </tr>
         @endforeach

@@ -17,40 +17,15 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/level', [LevelController::class, 'index']);
-Route::get('/kategori', [KategoriController::class, 'index']);
-Route::get('/user', [UserController::class, 'index']);
-
-// Route Barang
-Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
-
-
-Route::get('/barang/create', [BarangController::class, 'create'])->name('barang.create');
-
-
-Route::post('/barang/store', [BarangController::class, 'store'])->name('barang.store');
-
-// 2.6
-// Rute User
-Route::get('/user', [UserController::class, 'index'])->name('user.index');
-
-Route::get('/user/tambah', [UserController::class, 'tambah'])->name('user.tambah');
-
-Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan'])->name('user.tambah_simpan');
-
-Route::get('/ubah/{id}', [UserController::class, 'ubah'])->name('user.ubah');
-   
-Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan'])->name('user.ubah_simpan');
-
-Route::get('/user/hapus/{id}', [UserController::class, 'hapus'])->name('user.hapus');
-
-// Jobsheet 3
-
-// Praktikum 2
 Route::get('/', [WelcomeController::class, 'index']);
 
+Route::group(['prefix' => 'user'], function () {
+    Route::get('/', [UserController::class, 'index'])->name('user.index'); // Menampilkan halaman awal user
+    Route::post('/list', [UserController::class, 'list'])->name('user.list'); // Menampilkan data user dalam JSON untuk datatables
+    Route::get('/create', [UserController::class, 'create'])->name('user.create'); // Menampilkan halaman form tambah user
+    Route::post('/', [UserController::class, 'store'])->name('user.store'); // Menyimpan data user baru
+    Route::get('/{id}', [UserController::class, 'show'])->name('user.show'); // Menampilkan detail user
+    Route::get('/{id}/edit', [UserController::class, 'edit'])->name('user.edit'); // Menampilkan halaman form edit user
+    Route::put('/{id}', [UserController::class, 'update'])->name('user.update'); // Menyimpan perubahan data user
+    Route::delete('/{id}', [UserController::class, 'destroy'])->name('user.destroy'); // Menghapus data user
+});
