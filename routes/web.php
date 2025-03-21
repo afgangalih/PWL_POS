@@ -5,6 +5,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,3 +30,20 @@ Route::group(['prefix' => 'user'], function () {
     Route::put('/{id}', [UserController::class, 'update'])->name('user.update'); // Menyimpan perubahan data user
     Route::delete('/{id}', [UserController::class, 'destroy'])->name('user.destroy'); // Menghapus data user
 });
+
+Route::get('/level', [LevelController::class, 'index'])->name('level.index');
+Route::post('/level/list', [LevelController::class, 'list'])->name('level.list');
+
+Route::resource('level', LevelController::class);
+Route::post('level/list', [LevelController::class, 'list'])->name('level.list');
+
+// Kategori Route
+Route::resource('kategori', KategoriController::class);
+Route::post('kategori/list', [KategoriController::class, 'list'])->name('kategori.list');
+
+
+// Supplier Route
+Route::resource('supplier', SupplierController::class);
+Route::post('supplier/list', [SupplierController::class, 'list'])->name('supplier.list');
+
+

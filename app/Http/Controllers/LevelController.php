@@ -4,26 +4,43 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class LevelController extends Controller
 {
     public function index()
     {
-        // Insert Data
-       // DB::insert('insert into m_level(level_kode, level_nama, created_at) values(?, ?, ?)', ['CUS', 'Pelanggan', now()]);
-        //return 'Insert data baru berhasil';
-
-        // Update Data
-            //$row = DB::update('update m_level set level_nama = ? where level_kode = ?', ['Customer', 'CUS']);
-            //return 'Update data berhasil. Jumlah data yang diupdate: '. $row . 'baris';
-
-        // Delete Data
-       // $row = DB::delete('delete from m_level where level_kode = ?', ['CUS']);
-       // return 'Delete data berhasil. Jumlah data yang dihapus: '. $row . 'Baris';
-
-       // Read Data
-       $data = DB::select('select * from m_level');
-       return view('level', ['data' => $data]);
-
+        $breadcrumb = (object) [
+            'title' => 'Level Pengguna',
+            'list'  => ['Home' => url('/'), 'Level']
+        ];
+    
+        return view('level.index', [
+            'activeMenu' => 'level',
+            'breadcrumb' => $breadcrumb
+        ]);
     }
+    
+    
+    
+    public function list()
+    {
+        $data = DB::table('m_level')->get();
+    
+        return DataTables::of($data)
+            ->addColumn('aksi', function($row){
+                return '
+                    <a href="'.route('level.show', $row->level_id).'" class="btn btn-info btn-sm">Detail</a>
+                    <a href="'.route('level.edit', $row->level_id).'" class="btn btn-warning btn-sm">Edit</a>
+                    <form action="'.route('level.destroy', $row->level_id).'" method="POST" class="d-inline">
+                        '.csrf_field().method_field("DELETE").'
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Hapus data ini?\')">Hapus</button>
+                    </form>
+                ';
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
+    
+
 }
