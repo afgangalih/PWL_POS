@@ -11,7 +11,6 @@
     </div>
 @endif
 
-
 <div class="card card-outline card-primary">
     <div class="card-header">
         <h3 class="card-title">{{ $page->title }}</h3>
@@ -20,6 +19,18 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label for="level_id">Filter:</label>
+                <select class="form-control" id="level_id" name="level_id">
+                    <option value="">- Semua -</option>
+                    @foreach($level as $item)
+                        <option value="{{ $item->level_id }}">{{ $item->level_nama }}</option>
+                    @endforeach
+                </select>
+                <small class="form-text text-muted">Level Pengguna</small>
+            </div>
+        </div>
         <table class="table table-bordered table-striped table-hover table-sm" id="table_user">
             <thead>
                 <tr>
@@ -45,44 +56,29 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "{{ route('user.list') }}", // Gunakan route name agar sesuai dengan web.php
-            type: "POST",
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Tambahkan CSRF token untuk request POST
+            "url": "{{ route('user.list') }}",
+            "dataType": "json",
+            "type": "POST",
+            "headers": {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            "data": function(d) {
+                d.level_id = $('#level_id').val();
             }
         },
         columns: [
-            {
-                data: "DT_RowIndex",
-                className: "text-center",
-                orderable: false,
-                searchable: false
-            },
-            {
-                data: "username",
-                className: "",
-                orderable: true,
-                searchable: true
-            },
-            {
-                data: "nama",
-                className: "",
-                orderable: true,
-                searchable: true
-            },
-            {
-                data: "level.level_nama",
-                className: "",
-                orderable: false,
-                searchable: false
-            },
-            {
-                data: "aksi",
-                className: "text-center",
-                orderable: false,
-                searchable: false
-            }
+            { data: "DT_RowIndex", className: "text-center", orderable: false, searchable: false },
+            { data: "username", orderable: true, searchable: true },
+            { data: "nama", orderable: true, searchable: true },
+            { data: "level.level_nama", orderable: false, searchable: false },
+            { data: "aksi", className: "text-center", orderable: false, searchable: false }
         ]
+    });
+
+
+
+    $('#level_id').on('change', function() {
+        dataUser.ajax.reload();
     });
 });
 </script>
