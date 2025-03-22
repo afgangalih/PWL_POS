@@ -31,11 +31,13 @@ Route::group(['prefix' => 'user'], function () {
     Route::delete('/{id}', [UserController::class, 'destroy'])->name('user.destroy'); // Menghapus data user
 });
 
-Route::get('/level', [LevelController::class, 'index'])->name('level.index');
+// Level Route
+// Route untuk DataTables AJAX
 Route::post('/level/list', [LevelController::class, 'list'])->name('level.list');
 
+// Route untuk CRUD Level (sudah mencakup index, create, store, show, edit, update, destroy)
 Route::resource('level', LevelController::class);
-Route::post('level/list', [LevelController::class, 'list'])->name('level.list');
+
 
 // Kategori Route
 Route::resource('kategori', KategoriController::class);
@@ -43,6 +45,8 @@ Route::post('kategori/list', [KategoriController::class, 'list'])->name('kategor
 
 
 // Supplier Route
+Route::resource('supplier', SupplierController::class);
+Route::post('supplier/list', [SupplierController::class, 'list'])->name('supplier.list');
 Route::resource('supplier', SupplierController::class);
 Route::post('supplier/list', [SupplierController::class, 'list'])->name('supplier.list');
 

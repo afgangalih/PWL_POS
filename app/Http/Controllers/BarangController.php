@@ -30,22 +30,24 @@ class BarangController extends Controller
                 'm_barang.barang_id',
                 'm_barang.barang_kode',
                 'm_barang.barang_nama',
-                'm_kategori.kategori_nama',
+                DB::raw('m_kategori.kategori_nama AS kategori_nama'),
                 'm_barang.harga_beli',
                 'm_barang.harga_jual'
             );
-        
-        return DataTables::of($barang)
-            ->addColumn('aksi', function($row){
 
+        return DataTables::of($barang)
+            ->filterColumn('kategori_nama', function ($query, $keyword) {
+                $query->whereRaw("LOWER(m_kategori.kategori_nama) LIKE ?", ["%{$keyword}%"]);
+            })
+            ->addColumn('aksi', function ($row) {
                 $detailBtn = '<a href="'.route('barang.show', $row->barang_id).'" class="btn btn-sm btn-success">
-                <i class="fa fa-eye"></i> Detail
-            </a>';
+                    <i class="fa fa-eye"></i> Detail
+                </a>';
 
                 $editBtn = '<a href="'.route('barang.edit', $row->barang_id).'" class="btn btn-sm btn-info">
                     <i class="fa fa-edit"></i> Edit
                 </a>';
-                
+
                 $deleteBtn = '<form action="'.route('barang.destroy', $row->barang_id).'" method="POST" 
                     class="d-inline" onsubmit="return confirm(\'Apakah Anda yakin ingin menghapus barang ini?\')">
                     '.csrf_field().'
@@ -55,9 +57,9 @@ class BarangController extends Controller
                     </button>
                 </form>';
                 
-                return $editBtn . ' ' . $deleteBtn. ''.$detailBtn;
+                return $editBtn . ' ' . $deleteBtn . ' ' . $detailBtn;
             })
-            ->rawColumns(['aksi'])  // Penting: agar HTML di kolom aksi dirender dengan benar
+            ->rawColumns(['aksi']) // Agar tombol HTML dirender dengan benar
             ->make(true);
     }
 
@@ -71,26 +73,36 @@ class BarangController extends Controller
             )
             ->where('m_barang.barang_id', $id)
             ->first();
-        
+    
         if (!$barang) {
-            abort(404);
+            return redirect()->route('barang.index')->with('error', 'Barang tidak ditemukan.');
         }
-
+    
         $activeMenu = 'barang';
         $breadcrumb = (object) [
             'title' => 'Detail Barang',
             'list'  => ['Barang', 'Detail']
         ];
-        
+    
         return view('barang.show', compact('barang', 'activeMenu', 'breadcrumb'));
     }
+    
 
 
     public function create()
     {
         $kategori = KategoriModel::all();
-        return view('barang.create', compact('kategori'));
+    
+        $breadcrumb = (object) [
+            'title' => 'Tambah Barang',
+            'list'  => ['Barang', 'Tambah']
+        ];
+    
+        $activeMenu = 'barang';
+    
+        return view('barang.create', compact('kategori', 'breadcrumb', 'activeMenu'));
     }
+    
 
     public function store(Request $request)
     {
@@ -111,9 +123,17 @@ class BarangController extends Controller
     {
         $barang = BarangModel::findOrFail($id);
         $kategori = KategoriModel::all();
-        return view('barang.edit', compact('barang', 'kategori'));
+    
+        $breadcrumb = (object) [
+            'title' => 'Edit Barang',
+            'list'  => ['Barang', 'Edit']
+        ];
+    
+        $activeMenu = 'barang';
+    
+        return view('barang.edit', compact('barang', 'kategori', 'breadcrumb', 'activeMenu'));
     }
-
+    
     public function update(Request $request, $id)
     {
         $request->validate([

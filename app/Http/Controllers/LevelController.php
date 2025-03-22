@@ -41,6 +41,92 @@ class LevelController extends Controller
             ->rawColumns(['aksi'])
             ->make(true);
     }
+
+    public function create()
+{
+    $breadcrumb = (object) [
+        'title' => 'Tambah Level',
+        'list'  => ['Home' => url('/'), 'Level', 'Tambah']
+    ];
+
+    return view('level.create', [
+        'activeMenu' => 'level',
+        'breadcrumb' => $breadcrumb
+    ]);
+}
+
+public function store(Request $request)
+{
+    $request->validate([
+        'level_kode' => 'required|max:10|unique:m_level,level_kode',
+        'level_nama' => 'required|max:100'
+    ]);
+
+    DB::table('m_level')->insert([
+        'level_kode' => $request->level_kode,
+        'level_nama' => $request->level_nama,
+        'created_at' => now(),
+        'updated_at' => now()
+    ]);
+
+    return redirect()->route('level.index')->with('success', 'Level berhasil ditambahkan!');
+}
+
+public function show($id)
+{
+    $level = DB::table('m_level')->where('level_id', $id)->first();
+
+    if (!$level) {
+        abort(404);
+    }
+
+    $breadcrumb = (object) [
+        'title' => 'Detail Level',
+        'list'  => ['Home' => url('/'), 'Level', 'Detail']
+    ];
+
+    return view('level.show', compact('level', 'breadcrumb'))->with('activeMenu', 'level');
+}
+
+public function edit($id)
+{
+    $level = DB::table('m_level')->where('level_id', $id)->first();
+
+    if (!$level) {
+        abort(404);
+    }
+
+    $breadcrumb = (object) [
+        'title' => 'Edit Level',
+        'list'  => ['Home' => url('/'), 'Level', 'Edit']
+    ];
+
+    return view('level.edit', compact('level', 'breadcrumb'))->with('activeMenu', 'level');
+}
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'level_kode' => "required|max:10|unique:m_level,level_kode,$id,level_id",
+        'level_nama' => 'required|max:100'
+    ]);
+
+    DB::table('m_level')->where('level_id', $id)->update([
+        'level_kode' => $request->level_kode,
+        'level_nama' => $request->level_nama,
+        'updated_at' => now()
+    ]);
+
+    return redirect()->route('level.index')->with('success', 'Level berhasil diperbarui!');
+}
+
+public function destroy($id)
+{
+    DB::table('m_level')->where('level_id', $id)->delete();
+
+    return redirect()->route('level.index')->with('success', 'Level berhasil dihapus!');
+}
+
     
 
 }
