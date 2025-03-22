@@ -47,3 +47,18 @@ Route::resource('supplier', SupplierController::class);
 Route::post('supplier/list', [SupplierController::class, 'list'])->name('supplier.list');
 
 
+
+
+Route::prefix('barang')->group(function () {
+    Route::get('/', [BarangController::class, 'index'])->name('barang.index'); // Tampilkan halaman barang
+    Route::get('/list', [BarangController::class, 'list'])->name('barang.list'); // DataTables AJAX
+    Route::get('/create', [BarangController::class, 'create'])->name('barang.create'); // Form tambah
+    Route::post('/store', [BarangController::class, 'store'])->name('barang.store'); // Simpan data
+    Route::get('/edit/{id}', [BarangController::class, 'edit'])->name('barang.edit'); // Form edit
+    Route::put('/update/{id}', [BarangController::class, 'update'])->name('barang.update'); // Simpan perubahan
+    Route::delete('/destroy/{id}', [BarangController::class, 'destroy'])->name('barang.destroy'); // Hapus data
+    Route::get('/{id}', [BarangController::class, 'show'])->name('barang.show'); // Detail barang
+});
+
+
+
