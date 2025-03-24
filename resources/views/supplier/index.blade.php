@@ -1,75 +1,93 @@
 @extends('layouts.template')
 
 @section('content')
-
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-@endif
-
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-             
-            </div>
-            <div class="col-sm-6">
-              
+    <div class="card card-outline card-primary">
+        <div class="card-header">
+            <h3 class="card-title">{{ $page->title }}</h3>
+            <div class="card-tools">
+                <a class="btn btn-sm btn-primary mt-1" href="{{ url('supplier/create') }}">Tambah</a>
+                <button onclick="modalAction('{{ url('supplier/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
             </div>
         </div>
-    </div>
-</section>
 
-<div class="card card-outline card-primary">
-    <div class="card-header">
-        <h3 class="card-title">Daftar Supplier</h3>
-        <div class="card-tools">
-            <a class="btn btn-sm btn-primary" href="#">
-                <i class="fa fa-plus"></i> Tambah Supplier
-            </a>
-        </div>
-    </div>
-    <div class="card-body">
-        <table class="table table-bordered table-striped table-hover table-sm" id="table_supplier">
-            <thead>
+        <div class="card-body">
+            @if (session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+
+            @if (session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+
+            <table class="table table-bordered table-striped table-hover table-sm" id="table_supplier">
+                <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Kode</th>
-                    <th>Nama</th>
-                    <th>Alamat</th>
+                    <th>Kode Supplier</th>
+                    <th>Nama Supplier</th>
+                    <th>Alamat Supplier</th>
                     <th>Aksi</th>
                 </tr>
-            </thead>
-        </table>
+                </thead>
+            </table>
+        </div>
     </div>
-</div>
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" 
+        data-backdrop="static" data-keyboard="false" data-width="75%" aria-hidden="true">
+    </div>
 @endsection
 
+@push('css')
+@endpush
+
 @push('js')
-<script>
-$(document).ready(function() {
-    $('#table_supplier').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: "{{ route('supplier.list') }}",
-            type: "POST",
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        },
-        columns: [
-            { data: "supplier_id", className: "text-center" },
-            { data: "supplier_kode", className: "text-center" },
-            { data: "supplier_name" },
-            { data: "supplier_alamat" },
-            { data: "action", className: "text-center", orderable: false, searchable: false }
-        ]
-    });
-});
-</script>
+    <script>
+        function modalAction(url = ''){
+            $('#myModal').load(url,function(){
+                $('#myModal').modal('show');
+            });
+        }
+        $(document).ready(function() {
+            var dataKategori = $('#table_supplier').DataTable({
+                serverSide: true, // serverSide: true, jika ingin menggunakan server side processing
+                ajax: {
+                    "url": "{{ url('supplier/list') }}",
+                    "dataType": "json",
+                    "type": "POST"
+                },
+                columns: [
+                    {
+                        data: "DT_RowIndex", // nomor urut dari laravel datatable addIndexColumn()
+                        className: "text-center",
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: "supplier_kode",
+                        className: "",
+                        orderable: true, // orderable: true, jika ingin kolom ini bisa diurutkan
+                        searchable: true // searchable: true, jika ingin kolom ini bisa dicari
+                    },
+                    {
+                        data: "supplier_nama",
+                        className: "",
+                        orderable: true, // orderable: true, jika ingin kolom ini bisa diurutkan
+                        searchable: true // searchable: true, jika ingin kolom ini bisa dicari
+                    },
+                    {
+                        data: "supplier_alamat",
+                        className: "",
+                        orderable: true, // orderable: true, jika ingin kolom ini bisa diurutkan
+                        searchable: true // searchable: true, jika ingin kolom ini bisa dicari
+                    },
+                    {
+                        data: "aksi",
+                        className: "",
+                        orderable: false, // orderable: true, jika ingin kolom ini bisa diurutkan
+                        searchable: false // searchable: true, jika ingin kolom ini bisa dicari
+                    }
+                ]
+            });
+        });
+    </script>
 @endpush

@@ -196,6 +196,18 @@ public function destroy(string $id) {
 
 
     // Ajax
+
+    public function show_ajax($id)
+    {
+        $user = UserModel::find($id); // Ganti LevelModel ke UserModel
+    
+        if (!$user) {
+            return response()->json(['error' => 'User tidak ditemukan'], 404);
+        }
+    
+        return view('user.show_ajax', compact('user'));
+    }
+    
     public function create_ajax(){
         $level = LevelModel::select('level_id', 'level_nama')->get();
 
