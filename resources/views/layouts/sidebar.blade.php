@@ -73,6 +73,16 @@
                     <p>Transaksi Penjualan</p>
                 </a>
             </li>
+
+            <!-- Logout -->
+            <li class="nav-item">
+                <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+                    @csrf
+                    <button type="submit" class="btn btn-danger btn-block">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </li>
         </ul>
     </nav>
 </div>

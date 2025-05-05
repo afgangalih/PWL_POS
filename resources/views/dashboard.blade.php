@@ -6,13 +6,8 @@
         <h3 class="card-title">Selamat Datang, {{ $user->nama }}</h3>
     </div>
     <div class="card-body">
-        Ini adalah laman awal
         <p>Level: {{ $user->level->level_nama }}</p>
-        <form action="{{ route('logout') }}" method="POST" style="display:inline;">
-    @csrf
-    <button type="submit" class="btn btn-danger">Logout</button>
-</form>
-
+        <a href="{{ route('logout') }}" class="btn btn-danger">Logout</a>
     </div>
 </div>
 @endsection
