@@ -13,7 +13,7 @@ class UserModel extends Authenticatable
     protected $table = 'm_user'; // Nama tabel dalam database
     protected $primaryKey = 'user_id'; // Primary key tabel
 
-    protected $fillable = ['username', 'password', 'nama', 'level_id', 'created_at', 'updated_at'];
+    protected $fillable = ['username', 'password', 'nama', 'level_id', 'profil_picture', 'created_at', 'updated_at'];
 
     protected $hidden = ['password']; // Jangan tampilkan password saat select
     protected $casts = ['password' => 'hashed']; // Hash password otomatis

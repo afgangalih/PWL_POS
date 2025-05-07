@@ -83,6 +83,14 @@
                     </button>
                 </form>
             </li>
+
+            <!-- User Profile -->
+            <li class="nav-item">
+                <a href="{{ url('/user/profile') }}" class="nav-link {{ ($activeMenu == 'profile') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-user-circle"></i>
+                    <p>User Profile</p>
+                </a>
+            </li>
         </ul>
     </nav>
 </div>

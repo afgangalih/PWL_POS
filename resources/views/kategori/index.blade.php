@@ -1,85 +1,95 @@
 @extends('layouts.template')
 
 @section('content')
-    <div class="card card-outline card-primary">
+    <div class="card">
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a class="btn btn-sm btn-primary mt-1" href="{{ url('kategori/create') }}">Tambah</a>
-                <button onclick="modalAction('{{ url('kategori/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
+                <button onclick="modalAction('{{ url('/kategori/import') }}')" class="btn btn-info">Import Kategori</button>
+                <a href="{{ url('/kategori/export_excel') }}" class="btn btn-primary">Export Kategori</a>
+                <a href="{{ url('/kategori/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file- pdf"></i> Export Kategori (PDF)</a>
+                <button onclick="modalAction('{{ url('/kategori/create_ajax') }}')" class="btn btn-success">Tambah Data (Ajax)</button>
             </div>
         </div>
-
-        <div class="card-body">
-            @if (session('success'))
+        <div class="card-body">            
+            @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-
-            @if (session('error'))
+            
+            @if(session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
-
-            <table class="table table-bordered table-striped table-hover table-sm" id="table_kategori">
+            
+            <table class="table table-bordered table-sm table-striped table-hover" id="table-kategori">
                 <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Kode Kategori</th>
-                    <th>Nama Kategori</th>
-                    <th>Aksi</th>
-                </tr>
+                    <tr>
+                        <th>No</th>
+                        <th>Kode Kategori</th>
+                        <th>Nama Kategori</th>
+                        <th>Aksi</th>
+                    </tr>
                 </thead>
+                <tbody></tbody>
             </table>
         </div>
     </div>
-    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" 
-        data-backdrop="static" data-keyboard="false" data-width="75%" aria-hidden="true">
-</div>
-@endsection
 
-@push('css')
-@endpush
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" data-backdrop="static" data-keyboard="false" data-width="75%"></div>
+@endsection 
 
 @push('js')
     <script>
-        function modalAction(url = ''){
-            $('#myModal').load(url,function(){
+        function modalAction(url = '') {
+            $('#myModal').load(url, function() {
                 $('#myModal').modal('show');
             });
         }
+        var tableKategori;
         $(document).ready(function() {
-            var dataKategori = $('#table_kategori').DataTable({
-                serverSide: true, // serverSide: true, jika ingin menggunakan server side processing
+            tableKategori = $('#table-kategori').DataTable({
+                processing: true,
+                serverSide: true, 
                 ajax: {
                     "url": "{{ url('kategori/list') }}",
                     "dataType": "json",
-                    "type": "POST"
+                    "type": "POST",
                 },
                 columns: [
                     {
-                        data: "DT_RowIndex", // nomor urut dari laravel datatable addIndexColumn()
+                        data: "DT_RowIndex",
                         className: "text-center",
+                        width: "5%",
                         orderable: false,
                         searchable: false
                     },
                     {
                         data: "kategori_kode",
                         className: "",
-                        orderable: true, // orderable: true, jika ingin kolom ini bisa diurutkan
-                        searchable: true // searchable: true, jika ingin kolom ini bisa dicari
+                        width: "10%",
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "kategori_nama",
                         className: "",
-                        orderable: true, // orderable: true, jika ingin kolom ini bisa diurutkan
-                        searchable: true // searchable: true, jika ingin kolom ini bisa dicari
+                        width: "37%",
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "aksi",
-                        className: "",
-                        orderable: false, // orderable: true, jika ingin kolom ini bisa diurutkan
-                        searchable: false // searchable: true, jika ingin kolom ini bisa dicari
+                        className: "text-center",
+                        width: "14%",
+                        orderable: false,
+                        searchable: false
                     }
                 ]
+            });
+
+            $('#table-kategori_filter input').unbind().bind().on('keyup', function(e) {
+                if (e.keyCode == 13) { // enter key
+                    tableKategori.search(this.value).draw();
+                }
             });
         });
     </script>
