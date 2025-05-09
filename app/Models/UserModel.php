@@ -2,36 +2,54 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class UserModel extends Authenticatable
+class UserModel extends Authenticatable implements JWTSubject
 {
-    use HasFactory;
-
-    protected $table = 'm_user'; // Nama tabel dalam database
-    protected $primaryKey = 'user_id'; // Primary key tabel
-
-    protected $fillable = ['username', 'password', 'nama', 'level_id', 'profil_picture', 'created_at', 'updated_at'];
-
-    protected $hidden = ['password']; // Jangan tampilkan password saat select
-    protected $casts = ['password' => 'hashed']; // Hash password otomatis
-
-    public function level(): BelongsTo {
-        return $this->belongsTo(LevelModel::class, 'level_id', 'level_id');
+    public function getJWTIdentifier() {
+        return $this->getKey();
     }
 
-    public function getRoleName() : string {
+    public function getJWTCustomClaims() {
+        return [];
+    }
+
+    protected $table = 'm_user';
+    protected $primaryKey = 'user_id';
+    protected $fillable = ['level_id', 'username', 'nama', 'password', 'profil_picture'];
+
+    protected $hidden = ['password'];
+
+    protected $casts = ['password' => 'hashed'];
+
+    public function level(): BelongsTo 
+    {
+        return $this->belongsTo(LevelModel::class, 'level_id', 'level_id');
+    }
+     /**
+     * Mendapatkan nama role
+     */
+    public function getRoleName(): string
+    {
         return $this->level->level_nama;
     }
 
-    public function hasRole($role): bool {
+    /**
+     * Cek apakah user memiliki role tertentu
+     */
+    public function hasRole($role): bool
+    {
         return $this->level->level_kode == $role;
     }
-    
+    /**
+     * Mendapatkan kode role
+     */
     public function getRole()
     {
         return $this->level->level_kode;
     }
+
 }
