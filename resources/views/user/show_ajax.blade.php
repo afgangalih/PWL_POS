@@ -9,7 +9,7 @@
                 @endif
             </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+                <span aria-hidden="true">×</span>
             </button>
         </div>
         
@@ -35,6 +35,18 @@
                     <tr>
                         <th>Password</th>
                         <td>********</td>
+                    </tr>
+                    <tr>
+                        <th>Image</th>
+                        <td>
+                            @if($user->image)
+                            <img src="{{ asset('storage/posts/images/' . $user->image) }}" alt="User Image">
+
+
+                            @else
+                                Tidak ada gambar
+                            @endif
+                        </td>
                     </tr>
                 </table>
             @else

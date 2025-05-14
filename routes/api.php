@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\BarangController;
 
 
 Route::post('/register', RegisterController::class)->name('register');
+Route::post('/register1', RegisterController::class)->name('register1');
 Route::post('/login', LoginController::class)->name('login');
 Route::middleware('auth:api')->get('/user', function(Request $request){
 return $request->user();
@@ -54,3 +55,4 @@ Route::post('/barangs', [BarangController::class, 'store']);
 Route::get('/barangs/{barang}', [BarangController::class, 'show']);
 Route::put('/barangs/{barang}', [BarangController::class, 'update']);
 Route::delete('/barangs/{barang}', [BarangController::class, 'destroy']);
+

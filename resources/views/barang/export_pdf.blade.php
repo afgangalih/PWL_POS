@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
         body {
             font-family: "Times New Roman", Times, serif;
-            margin: 6px 20px 5px 20px;
+            margin: 0px 20px 5px 20px;
             line-height: 15px;
         }
         table {
@@ -35,19 +33,19 @@
             text-align: center;
         }
         .p-1 {
-            padding: 5px 1px;
+            padding: 5px 10px 5px 10px;
         }
-        .font-10 { 
-            font-size: 10pt; 
+        .font-10 {
+            font-size: 10pt;
         }
-        .font-11 { 
-            font-size: 11pt; 
+        .font-11 {
+            font-size: 11pt;
         }
-        .font-12 { 
-            font-size: 12pt; 
+        .font-12 {
+            font-size: 12pt;
         }
-        .font-13 { 
-            font-size: 13pt; 
+        .font-13 {
+            font-size: 13pt;
         }
         .border-bottom-header {
             border-bottom: 1px solid;
@@ -61,53 +59,34 @@
     <table class="border-bottom-header">
         <tr>
             <td width="15%" class="text-center">
-                <img src="{{ asset('Polinema-logo.png') }}" alt="Logo Polinema" style="width: 120px; height: auto;">
+                <img src="{{ asset('polinema-bw.png') }}" class="image">
             </td>
             <td width="85%">
-                <span class="text-center d-block font-11 font-bold mb-1">
-                    KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI
-                </span>
-                <span class="text-center d-block font-13 font-bold mb-1">
-                    POLITEKNIK NEGERI MALANG
-                </span>
-                <span class="text-center d-block font-10">
-                    Jl. Soekarno-Hatta No. 9 Malang 65141
-                </span>
-                <span class="text-center d-block font-10">
-                    Telepon (0341) 404424 Pes. 101-105, 0341-404420, Fax. (0341) 404420
-                </span>
-                <span class="text-center d-block font-10">
-                    Laman: www.polinema.ac.id
-                </span>
+                <span class="text-center d-block font-11 font-bold p-1">KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI</span>
+                <span class="text-center d-block font-13 font-bold p-1">POLITEKNIK NEGERI MALANG</span>
+                <span class="text-center d-block font-10">Jl. Soekarno-Hatta No. 9 Malang 65141</span>
+                <span class="text-center d-block font-10">Telepon (0341) 404424 Pes. 101-105, 0341-404420</span>
             </td>
         </tr>
     </table>
-    
-    <h3 class="text-center">LAPORAN DATA BARANG</h3>
-    
-    <table class="border-all">
-        <thead>
+    <h3 class="text-center">Daftar Barang</h3>
+<table class="border-all">
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($barang as $index => $item)
             <tr>
-                <th class="text-center">No</th>
-                <th>Kode Barang</th>
-                <th>Nama Barang</th>
-                <th class="text-right">Harga Beli</th>
-                <th class="text-right">Harga Jual</th>
-                <th>Kategori</th>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $item->barang_kode }}</td>
+                <td>{{ $item->barang_nama }}</td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach($barang as $b)
-                <tr>
-                    <td class="text-center">{{ $loop->iteration }}</td>
-                    <td>{{ $b->barang_kode }}</td>
-                    <td>{{ $b->barang_nama }}</td>
-                    <td class="text-right">{{ number_format($b->harga_beli, 0, ',', '.') }}</td>
-                    <td class="text-right">{{ number_format($b->harga_jual, 0, ',', '.') }}</td>
-                    <td>{{ $b->kategori->kategori_nama }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+        @endforeach
+    </tbody>
+</table>
 </body>
 </html>

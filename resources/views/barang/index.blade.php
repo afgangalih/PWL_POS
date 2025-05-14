@@ -7,7 +7,7 @@
             <div class="card-tools">
                 <button onclick="modalAction('{{ url('/barang/import') }}')" class="btn btn-info">Import Barang</button>
                 <a href="{{ url('/barang/export_excel') }}" class="btn btn-primary">Export Barang</a>
-                <a href="{{ url('/barang/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file- pdf"></i> Export Barang (PDF)</a>
+                <a href="{{ url('/barang/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i> Export Barang (PDF)</a>
                 <button onclick="modalAction('{{ url('/barang/create_ajax') }}')" class="btn btn-success">Tambah Data (Ajax)</button>
             </div>
         </div>
@@ -49,6 +49,7 @@
                         <th>Harga Beli</th>
                         <th>Harga Jual</th>
                         <th>Kategori</th>
+                        <th>Gambar</th> <!-- Tambah kolom Gambar -->
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -98,7 +99,7 @@
                     {
                         data: "barang_nama",
                         className: "",
-                        width: "37%",
+                        width: "30%", // Dikurangi untuk beri ruang kolom gambar
                         orderable: true,
                         searchable: true
                     },
@@ -127,6 +128,13 @@
                         className: "",
                         width: "14%",
                         orderable: true,
+                        searchable: false
+                    },
+                    {
+                        data: "gambar", // Tambah kolom untuk gambar
+                        className: "text-center",
+                        width: "10%",
+                        orderable: false,
                         searchable: false
                     },
                     {

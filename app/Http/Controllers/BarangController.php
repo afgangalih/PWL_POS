@@ -34,28 +34,34 @@ class BarangController extends Controller
             'activeMenu'    => $activeMenu
         ]);
     }
-    public function list(Request $request)
-    {
-        $barang = BarangModel::select('barang_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual', 'kategori_id')
-            ->with('kategori');
+public function list(Request $request)
+{
+    $barang = BarangModel::select('barang_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual', 'kategori_id', 'image') // Tambah 'image'
+        ->with('kategori');
 
-        $kategori_id = $request->input('filter_kategori');
-        if (!empty($kategori_id)) {
-            $barang->where('kategori_id', $kategori_id);
-        }
-
-        return DataTables::of($barang)
-            ->addIndexColumn()
-            ->addColumn('aksi', function ($barang) {
-                // Tombol aksi untuk setiap baris
-                $btn = '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
-                return $btn;
-            })
-            ->rawColumns(['aksi'])
-            ->make(true);
+    $kategori_id = $request->input('filter_kategori');
+    if (!empty($kategori_id)) {
+        $barang->where('kategori_id', $kategori_id);
     }
+
+    return DataTables::of($barang)
+        ->addIndexColumn()
+        ->addColumn('gambar', function ($barang) {
+            // Kolom untuk menampilkan gambar
+         return $barang->image 
+    ? '<img src="' . $barang->image . '" alt="' . $barang->barang_nama . '" width="100">'
+    : 'Tidak ada gambar';
+        })
+        ->addColumn('aksi', function ($barang) {
+            // Tombol aksi untuk setiap baris
+            $btn = '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+            $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+            $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
+            return $btn;
+        })
+        ->rawColumns(['gambar', 'aksi']) // Tambah 'gambar' ke rawColumns
+        ->make(true);
+}
     public function create_ajax()
     {
         $kategori = KategoriModel::select('kategori_id', 'kategori_nama')->get();
@@ -275,24 +281,38 @@ class BarangController extends Controller
         $writer->save('php://output');
         exit;
     }
-    public function export_pdf()
-    {
 
-          // Hanya tambahkan ini di awal fungsi
-          ini_set('max_execution_time', 300); // Menambah jadi 5 menit
-          
-        $barang = BarangModel::select('kategori_id','barang_kode','barang_nama','harga_beli','harga_jual')
-            ->orderBy('kategori_id')
-            ->orderBy('barang_kode')
-            ->with('kategori')
-            ->get();
-    
-        // use Barryvdh\DomPDF\Facade\Pdf;
-        $pdf = Pdf::loadView('barang.export_pdf', ['barang' => $barang]);
-        $pdf->setPaper('a4', 'portrait'); // set ukuran kertas dan orientasi
-        $pdf->setOption("isRemoteEnabled", true); // set true jika ada gambar dari url
-        $pdf->render();
-    
-        return $pdf->stream('Data Barang '.date('Y-m-d H:i:s').'.pdf');
-    }
+public function export_pdf()
+{
+    // Ambil hanya 5 baris untuk pengujian
+    $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
+        ->orderBy('kategori_id')
+        ->orderBy('barang_kode')
+        ->with('kategori')
+        ->get();
+
+   
+    return view('barang.export_pdf', ['barang' => $barang]);
+}
+
+/*
+public function export_pdf()
+{
+    $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
+        ->orderBy('kategori_id')
+        ->orderBy('barang_kode')
+        ->with('kategori')
+        ->get();
+
+   
+    $pdf = Pdf::loadView('barang.export_pdf', ['barang' => $barang]);
+    $pdf->setPaper('a4', 'portrait'); // set ukuran kertas dan orientasi
+    $pdf->setOption("isRemoteEnabled", false); // set true jika ada gambar dari url
+    $pdf->render();
+
+    return $pdf->stream('Data Barang ' . date('Y-m-d H:i:s') . '.pdf');
+}
+*/
+
+
 }
